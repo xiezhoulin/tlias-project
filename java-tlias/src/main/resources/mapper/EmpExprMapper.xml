@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 这里的 namespace 必须是你 Mapper 接口的全限定名（包名+接口名） -->
+<mapper namespace="com.xzl.mapper.EmpExprMapper">
+
+    <!-- 批量保存工作经历 -->
+    <insert id="addEmpExpr">
+        insert into emp_expr(emp_id,begin,end,company,job) values
+            <foreach collection="exprList" item="empexpr" separator=",">
+                (#{empexpr.empId},#{empexpr.begin},#{empexpr.end},#{empexpr.company},#{empexpr.job})
+            </foreach>
+    </insert>
+
+    <!-- 根据员工Id删除工作经历信息 -->
+    <delete id="getByIdsDelEmpExpr">
+        delete from emp_expr where emp_id in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+</mapper>

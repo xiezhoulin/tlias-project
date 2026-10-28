@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 这里的 namespace 必须是你 Mapper 接口的全限定名（包名+接口名） -->
+<mapper namespace="com.xzl.mapper.ClazzMapper">
+
+    <!-- 班级列表数据的条件分页查询 :
+    SELECT c.*,e.name as masterName FROM `clazz` as c,emp as e
+    WHERE c.master_id = e.id and c.name LIKE '%E%' and c.begin_date BETWEEN '2024-01-01' AND '2024-8-2'
+    ORDER BY c.update_time LIMIT 0,5 //使用了分页插件，查询出的数据封装到PageHander里就可以了
+    -->
+    <select id="getByConditionalPageQuery" resultType="com.xzl.pojo.Clazz">
+        SELECT c.*,e.name as masterName FROM `clazz` as c,emp as e
+        <where>
+            c.master_id = e.id
+            <if test="name != null and name != '' ">
+               and c.name LIKE concat('%',#{name},'%')
+            </if>
+            <if test="begin != null">
+               and c.begin_date BETWEEN #{begin} AND #{end}
+            </if>
+        </where>
+        ORDER BY c.update_time DESC
+    </select>
+
+</mapper>

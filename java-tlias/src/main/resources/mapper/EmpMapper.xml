@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 这里的 namespace 必须是你 Mapper 接口的全限定名（包名+接口名） -->
+<mapper namespace="com.xzl.mapper.EmpMapper">
+    <!-- 在这里写 SQL 语句 -->
+
+    <!-- 查询所有 -->
+    <select id="getByAllQueryEmp" resultType="com.xzl.pojo.Emp">
+        SELECT e.*, d.`name` AS deptName
+        FROM emp AS e INNER JOIN dept AS d ON e.dept_id = d.id
+        ORDER BY e.update_time DESC LIMIT #{page},#{pageSize}
+    </select>
+
+    <!--条件分页查询-->
+    <select id="getByConditionQueryEmp" resultType="com.xzl.pojo.Emp">
+        SELECT e.*, d.`name` AS deptName
+        FROM emp AS e INNER JOIN dept AS d ON e.dept_id = d.id
+        <where>
+            <if test="name != null and name != ''">
+                AND e.`name` LIKE concat('%',#{name},'%')
+            </if>
+            <if test="gender != null">
+                AND e.gender = #{gender}
+            </if>
+            <if test="begin != null">
+                AND e.entry_date BETWEEN #{begin} AND #{end}
+            </if>
+        </where>
+        ORDER BY e.update_time DESC LIMIT #{page},#{pageSize}
+    </select>
+
+    <!-- 根据id删除多个或一个员工 -->
+    <delete id="getByIdsDelEmp">
+        delete from emp where id in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </delete>
+
+</mapper>

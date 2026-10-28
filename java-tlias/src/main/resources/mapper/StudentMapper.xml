@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 这里的 namespace 必须是你 Mapper 接口的全限定名（包名+接口名） -->
+<mapper namespace="com.xzl.mapper.StudentMapper">
+    <!-- 在这里写 SQL 语句 -->
+
+    <!-- 条件分页查询 -->
+    <select id="getByConditionalQueryStudents" resultType="com.xzl.pojo.Student">
+        SELECT
+        s.*,
+        c.name AS clazzName
+        FROM
+        student s
+        INNER JOIN clazz c ON s.clazz_id = c.id
+        <where>
+            <!-- 条件保持不变 -->
+            <if test="name != null and name != '' ">
+                AND s.name LIKE concat('%', #{name}, '%')
+            </if>
+            <if test="degree != null">
+                AND s.degree = #{degree}
+            </if>
+            <if test="clazzId != null">
+                AND s.clazz_id = #{clazzId}
+            </if>
+        </where>
+        ORDER BY
+        s.update_time DESC
+    </select>
+
+    <!-- 批量删除学员 -->
+    <delete id="getByIdDeleteStudents">
+        DELETE FROM `student` WHERE id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
